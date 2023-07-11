@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <!-- tipos de eventos com HTML -->
+    <h1 id="header">API</h1>
+    <button onclick='todosProdutos()'>Todos os produtos</button>
+    <br/><br/>
+    Atualizar Produto <br/>
+    id: <input id='input-id' type="number"/> <br/>
+    title: <input id='input-title' type="text"/> <br/>
+    price: <input id='input-price' type="number"/> <br/>
+    <button onclick='atualizarProduto()'>Atualizar</button>
+    <br/><br/>
+    <div id="resultado"></div>
+  </body>
+</html>
+
+<script>
+
+// Link para consumir uma API
+// https://www.freecodecamp.org/portuguese/news/tutorial-de-fetch-api-em-javascript-exemplos-de-post-e-cabecalho/
+
+function buscarProduto() {
+  const id = document.getElementById('input-produto').value;
+  fetch(`https://dummyjson.com/products/${id}`)
+  .then(res => res.json())
+  .then(json => {
+    document.getElementById('resultado').textContent = JSON.stringify(json);
+  })
+};
+
+function atualizarProduto() {
+  const id = document.getElementById('input-id').value;
+  const title = document.getElementById('input-title').value;
+  const price = document.getElementById('input-price').value;
+  const atualizacaoObj = {
+    title: title,
+    price: price
+  };
+
+  fetch(`https://dummyjson.com/products/${id}`, {
+    method: 'PUT', // 'PATCH'
+    headers: { 'Content-Type': 'application/json' },
+    body: atualizacaoObj
+  })
+  .then(res => res.json())
+  .then(json => {
+    if (json.message) {
+      alert(json.message);
+    } else {
+      alert('Atualização foi feita com sucesso');
+    }
+  })
+  .catch(error => {
+    alert('Houve erro na atualização');
+  });
+}
+
+function deletarProduto() {
+  const id = document.getElementById('input-id').value;
+
+  fetch(`https://dummyjson.com/products/${id}`, {
+    method: 'DELETE',
+  })
+  .then(res => res.json())
+  .then(json => {
+    if (json.message) {
+      alert('Houve erro na deleção');
+    } else {
+      alert('Deleção foi feita com sucesso');
+    }
+  })
+  .catch(error => {
+    console.log(error);
+  });
+};
+
+// JSON.stringify = converte o JSON em String
+// JSON.parte = converte o string em JSON
+
+function todosProdutos() {
+  fetch(`https://dummyjson.com/products`)
+  .then(retorno => retorno.json())
+  .then(resultado => {
+    document.getElementById('resultado').textContent = JSON.stringify(resultado.products);
+  })
+};
+
+
+</script>
